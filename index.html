@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>jsonp跨域设置</title>
+	<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <textarea id="text1" style="width: 400px; height: 100px;"></textarea>
+    <br/>
+    <input id="btn1" type="button" value="跨域获取数据1" />
+    <br/>
+    <br/>
+    <textarea id="text2" style="width: 400px; height: 100px;"></textarea>
+    <br/>
+    <input id="btn2" type="button" value="跨域获取数据2" />
+    <br/>
+    <br/>
+    <textarea id="text3" style="width: 400px; height: 100px;"></textarea>
+    <br/>
+    <input id="btn3" type="button" value="跨域获取数据3" />
+    <br/>
+    <br/>
+    <textarea id="text4" style="width: 400px; height: 100px;"></textarea>
+    <br/>
+    <input id="btn4" type="button" value="跨域获取数据4" />
+    <br/>
+    <br/>
+    <textarea id="text5" style="width: 400px; height: 100px;"></textarea>
+    <br/>
+    <input id="btn5" type="button" value="跨域获取数据5" />
+
+
+	<script type="text/javascript">
+		function callback (result) {
+	        var data = JSON.stringify(result); //json对象转成字符串
+	        $("#text1").val(data);
+	    }
+
+	    function showData (result) {
+	        var data = JSON.stringify(result); //json对象转成字符串
+	        $("#text3").val(data);
+	    }
+
+
+	    function showData2 (result) {
+	        var data = JSON.stringify(result); //json对象转成字符串
+	        $("#text4").val(data);
+	    }
+
+
+	    $(document).ready(function () {
+
+	        $("#btn1").click(function () {
+	             //向头部输入一个脚本，该脚本发起一个跨域请求
+	            $("head").append("<script src='http://localhost:3000/test?callback=callback'><\/script>");
+	        });
+
+	        
+	        $("#btn2").click(function () {
+	            $.ajax({
+	                url: "http://localhost:3000/test2",
+	                type: "GET",
+	                dataType: "jsonp", //指定服务器返回的数据类型
+	                success: function(result) {
+	                 	var data = JSON.stringify(result); //json对象转成字符串
+	        			$("#text2").val(data);
+	                }
+	            });
+	        });
+
+	        $("#btn3").click(function () {
+	            $.ajax({
+	                url: "http://localhost:3000/test3",
+	                type: "GET",
+	                dataType: "jsonp", //指定服务器返回的数据类型
+	                jsonpCallback: 'showData',
+	                success: function (data) {
+                        console.info("调用success");
+                    }
+	            });
+	        });
+
+	        // 指定参数名
+	        $("#btn4").click(function () {
+	            $.ajax({
+	                url: "http://localhost:3000/test4",
+	                type: "GET",
+	                dataType: "jsonp", //指定服务器返回的数据类型
+	                jsonp: 'theFunction',
+	                jsonpCallback: 'showData2',
+	                success: function (data) {
+                        console.info("调用success");
+                    }
+	            });
+	        });
+
+	        // 指定post方法请求尝试 ，客户端也会将其自动转换为get请求
+	        $("#btn5").click(function () {
+	            $.ajax({
+	                url: "http://localhost:3000/test5",
+	                type: "POST",
+	                dataType: "jsonp", //指定服务器返回的数据类型
+	                jsonp: 'callback',
+	                success: function (data) {
+                        var result = JSON.stringify(data);
+                        $("#text5").val(result);
+                    }
+	            });
+	        });
+	         
+	    });
+
+	</script>
+</body>
+</html>
